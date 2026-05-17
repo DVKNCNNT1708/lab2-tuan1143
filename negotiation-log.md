@@ -1,97 +1,100 @@
-# Biên bản đàm phán hợp đồng API
+# Negotiation Log — Pair 03 Core Business ↔ Access Gate
 
-- Cặp đàm phán:
-- Product: A / B
-- Provider:
-- Consumer:
-- Phiên: v1.0
-- Ngày:
+## Participants
+
+- Provider: Access Gate Service (A3/B3)
+- Consumer: Core Business Service (A6/B6)
 
 ---
 
-## Issue #1
+# Issue 1 — Gate Status Enum
 
-- Raised by: Consumer / Provider
-- Endpoint:
-- Concern:
-- Proposal:
-- Resolution: Accepted / Rejected / Modified
-- Rationale:
-- Impact:
+## Problem
+Consumer muốn biết trạng thái realtime của cổng.
 
----
+## Discussion
+Hai bên thảo luận các trạng thái cần hỗ trợ.
 
-## Issue #2
+## Decision
+Sử dụng:
+- OPEN
+- CLOSED
+- LOCKED
 
-- Raised by: Consumer / Provider
-- Endpoint:
-- Concern:
-- Proposal:
-- Resolution: Accepted / Rejected / Modified
-- Rationale:
-- Impact:
+## Rationale
+Đủ cho use case hiện tại.
 
 ---
 
-## Issue #3
+# Issue 2 — RFID Format
 
-- Raised by: Consumer / Provider
-- Endpoint:
-- Concern:
-- Proposal:
-- Resolution: Accepted / Rejected / Modified
-- Rationale:
-- Impact:
+## Problem
+Cần thống nhất format cardId.
 
----
+## Decision
+Format:
+RFID-YYYY-NNN
 
-## Issue #4
+Ví dụ:
+RFID-2026-001
 
-- Raised by: Consumer / Provider
-- Endpoint:
-- Concern:
-- Proposal:
-- Resolution: Accepted / Rejected / Modified
-- Rationale:
-- Impact:
+## Rationale
+Dễ validate và đồng bộ hệ thống.
 
 ---
 
-## Issue #5
+# Issue 3 — Access Log Retention
 
-- Raised by: Consumer / Provider
-- Endpoint:
-- Concern:
-- Proposal:
-- Resolution: Accepted / Rejected / Modified
-- Rationale:
-- Impact:
+## Problem
+Consumer cần lịch sử truy cập.
 
----
+## Decision
+Provider lưu log tối thiểu 30 ngày.
 
-## Issue #6
-
-- Raised by: Consumer / Provider
-- Endpoint:
-- Concern:
-- Proposal:
-- Resolution: Accepted / Rejected / Modified
-- Rationale:
-- Impact:
+## Rationale
+Phục vụ audit và security review.
 
 ---
 
-# Chốt hợp đồng v1.0
+# Issue 4 — Unauthorized Handling
 
-Provider sign-off:  
-Consumer sign-off:  
-Witness (GV/TA):    
-Date:               
+## Problem
+Thiếu JWT token xử lý thế nào.
+
+## Decision
+Trả HTTP 401 theo Problem Details.
+
+## Rationale
+Tuân thủ REST API standard.
 
 ---
 
-## Ghi chú warning nếu Spectral còn cảnh báo
+# Issue 5 — Pagination Strategy
 
-| Warning | Lý do chấp nhận tạm thời | Kế hoạch sửa |
-|---|---|---|
-|  |  |  |
+## Problem
+Danh sách log có thể rất lớn.
+
+## Decision
+Sử dụng cursor-based pagination.
+
+## Rationale
+Hiệu quả hơn offset pagination.
+
+---
+
+# Issue 6 — Core Business Timeout
+
+## Problem
+Nếu Core Business không phản hồi policy check.
+
+## Decision
+Access Gate mặc định DENY access.
+
+## Rationale
+Ưu tiên an toàn hệ thống.
+
+---
+
+# Final Agreement
+
+Hai bên đồng ý sử dụng OpenAPI 3.1 contract-first trước khi implementation backend.

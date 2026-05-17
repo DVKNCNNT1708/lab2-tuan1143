@@ -1,68 +1,48 @@
-# Phân tích yêu cầu — vai Provider
+# Provider Analysis — Access Gate Service
 
-- Cặp đàm phán:
-- Product: A / B
-- Provider service:
-- Consumer service:
-- Người viết:
-- Ngày:
+## Service Name
+Access Gate Service
 
----
+## Responsibilities
+Access Gate Service chịu trách nhiệm:
 
-## 1. Resource chính
+- Quản lý trạng thái cổng ra vào
+- Ghi nhận log quẹt thẻ RFID
+- Cung cấp lịch sử truy cập cho Core Business
+- Hỗ trợ kiểm tra trạng thái cổng realtime
 
-| Resource | Mô tả | Thuộc tính bắt buộc | Thuộc tính tùy chọn |
-|---|---|---|---|
-| `<Resource 1>` |  |  |  |
-| `<Resource 2>` |  |  |  |
+## Main APIs
 
----
+### GET /gates
+Trả danh sách cổng trong hệ thống.
 
-## 2. Action/API dự kiến
+### GET /gates/{gateId}/status
+Lấy trạng thái realtime của cổng.
 
-| Method | Path | Mục đích | Consumer gọi khi nào? |
-|---|---|---|---|
-| POST | `/...` |  |  |
-| GET | `/.../{id}` |  |  |
+### GET /access-logs/recent
+Lấy access log gần đây.
 
----
+### POST /access-logs
+Ghi nhận access log mới từ thiết bị cổng.
 
-## 3. Error case
+## Validation Rules
 
-Tối thiểu 5 case.
+- gateId phải có dạng `GATE-XX`
+- cardId phải có dạng `RFID-YYYY-NNN`
+- status chỉ gồm:
+  - OPEN
+  - CLOSED
+  - LOCKED
 
-| Status | Tình huống | Response body dự kiến |
-|---:|---|---|
-| 400 | Payload sai định dạng | `Problem` |
-| 401 | Thiếu Bearer token | `Problem` |
-| 403 | Token hợp lệ nhưng không có quyền | `Problem` |
-| 404 | Resource không tồn tại | `Problem` |
-| 409 | Xung đột nghiệp vụ | `Problem` |
-| 422 | Dữ liệu đúng JSON nhưng vi phạm nghiệp vụ | `Problem` |
+## Possible Errors
 
----
+- Gate not found
+- Invalid RFID format
+- Unauthorized request
+- Internal server error
 
-## 4. Giả định bổ sung
+## Non-functional Requirements
 
-Ghi rõ những điểm user story chưa nói nhưng Provider cần giả định.
-
-- Giả định 1:
-- Giả định 2:
-- Giả định 3:
-
----
-
-## 5. Câu hỏi cho Consumer
-
-1. 
-2. 
-3. 
-
----
-
-## 6. Rủi ro tích hợp
-
-| Rủi ro | Tác động | Đề xuất xử lý |
-|---|---|---|
-| Tên field không thống nhất | Consumer parse lỗi | Chốt naming trong `openapi.yaml` |
-| Payload lớn | Timeout/mock lỗi | Thống nhất content-type và size limit |
+- Response realtime dưới 2 giây
+- API sử dụng Bearer JWT
+- Log retention tối thiểu 30 ngày
